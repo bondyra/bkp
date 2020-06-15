@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: connect
+  namespace: kafka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: connect
+  template:
+    metadata:
+      labels:
+        app: connect
+    spec:
+      volumes:
+        - name: connect-plugins-storage
+          persistentVolumeClaim:
+            claimName: connect-plugins-pv-claim
+      containers:
+      - name: connect
+        image: confluentinc/cp-kafka-connect-base@sha256:71a668079aaa2af75a63d449452d7ed49edfb733e34460d8bf3bb32eeb936d1e
+        ports:
+        - containerPort: 30808
+        env:
+        - name: CONNECT_BOOTSTRAP_SERVERS
+          value: broker:9092
+        - name: CONNECT_GROUP_ID
+          value: connect-group
+        - name: CONNECT_CONFIG_STORAGE_TOPIC
+          value: connect-config-storage
+        - name: CONNECT_OFFSET_STORAGE_TOPIC
+          value: connect-offset-storage
+        - name: CONNECT_STATUS_STORAGE_TOPIC
+          value: connect-status-storage
+        - name: CONNECT_KEY_CONVERTER
+          value: org.apache.kafka.connect.storage.StringConverter
+        - name: CONNECT_VALUE_CONVERTER
+          value: org.apache.kafka.connect.storage.StringConverter
+        - name: CONNECT_INTERNAL_KEY_CONVERTER
+          value: org.apache.kafka.connect.json.JsonConverter
+        - name: CONNECT_INTERNAL_VALUE_CONVERTER
+          value: org.apache.kafka.connect.json.JsonConverter
+        - name: CONNECT_PLUGIN_PATH
+          value: /usr/share/confluent-hub-components
+        - name: CONNECT_REST_ADVERTISED_HOST_NAME
+          value: connect
+        - name: CONNECT_REST_PORT
+          value: "30808"
+        - name: CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR
+          value: "3"
+        - name: CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR
+          value: "3"
+        - name: CONNECT_STATUS_STORAGE_REPLICATION_FACTOR
+          value: "3"
+        - name: CONNECT_LOG4J_ROOT_LOGLEVEL
+          value: INFO
+        - name: CLASSPATH
+          value: /usr/share/java/monitoring-interceptors/monitoring-interceptors-5.1.1.jar
+        - name: CONNECT_PRODUCER_INTERCEPTOR_CLASSES
+          value: io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor
+        - name: CONNECT_CONSUMER_INTERCEPTOR_CLASSES
+          value: io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor
+        volumeMounts:
+          - mountPath: "/usr/share/confluent-hub-components"
+            name: connect-plugins-storage
