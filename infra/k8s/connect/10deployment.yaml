@@ -19,7 +19,7 @@ spec:
             claimName: connect-plugins-pv-claim
       containers:
       - name: connect
-        image: confluentinc/cp-kafka-connect-base@sha256:71a668079aaa2af75a63d449452d7ed49edfb733e34460d8bf3bb32eeb936d1e
+        image: confluentinc/cp-kafka-connect-base:5.2.2
         ports:
         - containerPort: 30808
         env:
