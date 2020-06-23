@@ -79,6 +79,10 @@ resource "kubernetes_stateful_set" "kafka" {
       }
 
       spec {
+        service_account_name = "default"
+        automount_service_account_token = true
+        share_process_namespace = true
+
         volume {
           name = "configmap"
 
