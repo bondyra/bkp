@@ -1,5 +1,6 @@
 variable "namespace" {
 }
+
 resource "kubernetes_config_map" "zookeeper_config" {
   metadata {
     name = "zookeeper-config"
@@ -7,11 +8,11 @@ resource "kubernetes_config_map" "zookeeper_config" {
   }
 
   data = {
-    "init.sh" = "#!/bin/bash\nset -e\nset -x\n\n[ -d /var/lib/zookeeper/data ] || mkdir /var/lib/zookeeper/data\n[ -z \"$ID_OFFSET\" ] && ID_OFFSET=1\nexport ZOOKEEPER_SERVER_ID=$(($${HOSTNAME##*-} + $ID_OFFSET))\necho \"$${ZOOKEEPER_SERVER_ID:-1}\" | tee /var/lib/zookeeper/data/myid\ncp -Lur /etc/kafka-configmap/* /etc/kafka/\n[ ! -z \"$PZOO_REPLICAS\" ] && [ ! -z \"$ZOO_REPLICAS\" ] && {\n  sed -i \"s/^server\\\\./#server./\" /etc/kafka/zookeeper.properties\n  for N in $(seq $PZOO_REPLICAS); do echo \"server.$N=pzoo-$(( $N - 1 )).pzoo:2888:3888:participant\" >> /etc/kafka/zookeeper.properties; done\n  for N in $(seq $ZOO_REPLICAS); do echo \"server.$(( $PZOO_REPLICAS + $N ))=zoo-$(( $N - 1 )).zoo:2888:3888:participant\" >> /etc/kafka/zookeeper.properties; done\n}\nsed -i \"s/server\\.$ZOOKEEPER_SERVER_ID\\=[a-z0-9.-]*/server.$ZOOKEEPER_SERVER_ID=0.0.0.0/\" /etc/kafka/zookeeper.properties"
+    "init.sh" = file("${path.module}/init.sh")
 
-    "log4j.properties" = "log4j.rootLogger=INFO, stdout\nlog4j.appender.stdout=org.apache.log4j.ConsoleAppender\nlog4j.appender.stdout.layout=org.apache.log4j.PatternLayout\nlog4j.appender.stdout.layout.ConversionPattern=[%d] %p %m (%c)%n\n\n# Suppress connection log messages, three lines per livenessProbe execution\nlog4j.logger.org.apache.zookeeper.server.NIOServerCnxnFactory=WARN\nlog4j.logger.org.apache.zookeeper.server.NIOServerCnxn=WARN"
+    "log4j.properties" = file("${path.module}/log4j.properties")
 
-    "zookeeper.properties" = "tickTime=2000\ndataDir=/var/lib/zookeeper/data\ndataLogDir=/var/lib/zookeeper/log\nclientPort=2181\nmaxClientCnxns=2\ninitLimit=5\nsyncLimit=2\nserver.1=pzoo-0.pzoo:2888:3888:participant\nserver.2=pzoo-1.pzoo:2888:3888:participant\nserver.3=pzoo-2.pzoo:2888:3888:participant\nserver.4=zoo-0.zoo:2888:3888:participant\nserver.5=zoo-1.zoo:2888:3888:participant\n"
+    "zookeeper.properties" = file("${path.module}/zookeeper.properties")
   }
 }
 
