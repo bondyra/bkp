@@ -54,7 +54,7 @@ module "kafka" {
   external_port = var.broker_port
 }
 
-module "aux" {
+module "kafka-aux" {
   source = "./kafka-aux"
   namespace = kubernetes_namespace.kafka_workspace.metadata[0].name
 
