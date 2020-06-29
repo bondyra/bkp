@@ -1,0 +1,4 @@
+[submodule "tests/bkp-test-data"]
+	path = tests/bkp-test-data
+	url = git@github.com:bondyra/bkp-test-data.git
+	branch = master
