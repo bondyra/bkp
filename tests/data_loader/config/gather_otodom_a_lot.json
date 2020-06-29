@@ -1,0 +1,36 @@
+{
+  "input": {
+    "type": "otodom",
+    "args": {
+      "base_urls": [
+        "https://www.otodom.pl/sprzedaz/mieszkanie/?search%5Bdescription%5D=1&search%5Border%5D=created_at_first%3Adesc&nrAdsPerPage=72&page=17",
+        "https://www.otodom.pl/sprzedaz/mieszkanie/?search%5Bdescription%5D=1&search%5Border%5D=created_at_first%3Adesc&nrAdsPerPage=72&page=16",
+        "https://www.otodom.pl/sprzedaz/mieszkanie/?search%5Bdescription%5D=1&search%5Border%5D=created_at_first%3Adesc&nrAdsPerPage=72&page=15",
+        "https://www.otodom.pl/sprzedaz/mieszkanie/?search%5Bdescription%5D=1&search%5Border%5D=created_at_first%3Adesc&nrAdsPerPage=72&page=14",
+        "https://www.otodom.pl/sprzedaz/mieszkanie/?search%5Bdescription%5D=1&search%5Border%5D=created_at_first%3Adesc&nrAdsPerPage=72&page=13",
+        "https://www.otodom.pl/sprzedaz/mieszkanie/?search%5Bdescription%5D=1&search%5Border%5D=created_at_first%3Adesc&nrAdsPerPage=72&page=12",
+        "https://www.otodom.pl/sprzedaz/mieszkanie/?search%5Bdescription%5D=1&search%5Border%5D=created_at_first%3Adesc&nrAdsPerPage=72&page=11",
+        "https://www.otodom.pl/sprzedaz/mieszkanie/?search%5Bdescription%5D=1&search%5Border%5D=created_at_first%3Adesc&nrAdsPerPage=72&page=10",
+        "https://www.otodom.pl/sprzedaz/mieszkanie/?search%5Bdescription%5D=1&search%5Border%5D=created_at_first%3Adesc&nrAdsPerPage=72&page=9",
+        "https://www.otodom.pl/sprzedaz/mieszkanie/?search%5Bdescription%5D=1&search%5Border%5D=created_at_first%3Adesc&nrAdsPerPage=72&page=8",
+        "https://www.otodom.pl/sprzedaz/mieszkanie/?search%5Bdescription%5D=1&search%5Border%5D=created_at_first%3Adesc&nrAdsPerPage=72&page=7",
+        "https://www.otodom.pl/sprzedaz/mieszkanie/?search%5Bdescription%5D=1&search%5Border%5D=created_at_first%3Adesc&nrAdsPerPage=72&page=6",
+        "https://www.otodom.pl/sprzedaz/mieszkanie/?search%5Bdescription%5D=1&search%5Border%5D=created_at_first%3Adesc&nrAdsPerPage=72&page=5",
+        "https://www.otodom.pl/sprzedaz/mieszkanie/?search%5Bdescription%5D=1&search%5Border%5D=created_at_first%3Adesc&nrAdsPerPage=72&page=4",
+        "https://www.otodom.pl/sprzedaz/mieszkanie/?search%5Bdescription%5D=1&search%5Border%5D=created_at_first%3Adesc&nrAdsPerPage=72&page=3",
+        "https://www.otodom.pl/sprzedaz/mieszkanie/?search%5Bdescription%5D=1&search%5Border%5D=created_at_first%3Adesc&nrAdsPerPage=72&page=2",
+        "https://www.otodom.pl/sprzedaz/mieszkanie/?search%5Bdescription%5D=1&search%5Border%5D=created_at_first%3Adesc&nrAdsPerPage=72"
+      ],
+      "base_url_wait_seconds": 10,
+      "repetitions": 1,
+      "repetition_wait_seconds": 3600,
+      "offer_url_part": "https://www.otodom.pl/oferta/"
+    }
+  },
+  "output": {
+    "type": "file",
+    "args": {
+      "dir_path": "output"
+    }
+  }
+}
