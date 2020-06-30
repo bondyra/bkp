@@ -1,75 +1,73 @@
 import os
+import shutil
+import uuid
+from typing import Dict
 
 import pytest
+from confluent_kafka import Producer
+from loader.run import load
+from mock import patch, Mock, call
 
-from loader.run import load_config, validate_config, get_input, get_output
+
+def _make_structure(base_path: str, dir_struct):
+    for key, nested_struct in dir_struct.items():
+        if isinstance(nested_struct, Dict):
+            new_base = os.path.join(base_path, key)
+            os.mkdir(new_base)
+            _make_structure(new_base, nested_struct)
+        else:
+            file, lines = key, nested_struct
+            with open(os.path.join(base_path, file), 'w') as f:
+                f.write('\n'.join(lines))
 
 
-def test_correct_config():
-    config = load_config(os.path.join(os.path.dirname(__file__), 'config.json'))
-    assert config == {
-        'input': {
-            'type': 'something',
-            'args': {
-                'param1': 'value1'
-            }
+@pytest.fixture
+def test_directory():
+    random_id = uuid.uuid4().hex
+    os.mkdir(random_id)
+
+    _make_structure(random_id, {
+        'a': {
+            'file_a1': ['msg_a1_1', 'msg_a1_2'],
+            'file_a2': ['msg_a2_1']
         },
-        'output': {
-            'type': 'something',
-            'args': {
-                'param2': 'value2'
-            }
-        }
-    }
+        'b': {
+            'file_b1': ['msg_b1_1'],
+            'b_a': {
+                'file_b_a1': ['msg_b_a1_1'],
+                'file_b_a2': ['msg_b_a2_1', 'msg_b_a2_2'],
+                '.should_be_ignored': ['UNWANTED1', 'UNWANTED2'],
+            },
+            '.another_to_be_ignored': ['UNWANTED1', 'UNWANTED2'],
+        },
+        'c': {}
+    })
 
-    validate_config(config)
+    yield random_id
 
-
-@pytest.mark.parametrize('invalid_config',
-                         [
-                             {},
-                             {'input': 'str'},
-                             {'input': {'type': 'x'}, 'output': 'str'},
-                             {'input': {'type': 'x'}, 'output': {'type': 'x'}},
-                             {'input': {'type': 'x', 'args': {}}, 'output': {'type': 'x', 'args': 'str'}},
-                         ])
-def test_incorrect_configs(invalid_config):
-    with pytest.raises(Exception):
-        validate_config(invalid_config)
+    shutil.rmtree(random_id)
 
 
-def test_get_otodom_input():
-    get_input(
-        {
-            'type': 'otodom',
-            'args': {
-                'base_urls': ['bu1', 'bu2'],
-                'base_url_wait_seconds': 1,
-                'repetitions': 2,
-                'repetition_wait_seconds': 3600,
-                'offer_url_part': 'oup'
-            }
-        }
-    )
-    with pytest.raises(Exception):
-        get_input(
-            {
-                'type': 'otodom',
-                'args': {
-                    'x': 'x'
-                }
-            }
+def test_load(test_directory):
+    producer_mock = Mock(spec_set=Producer)
+    with patch('loader.run.create_kafka_producer', return_value=producer_mock) as producer_factory_mock:
+        load(test_directory, 'broker', 'schemaregistry', 'topic')
+
+        producer_factory_mock.assert_called_once_with({
+            'bootstrap.servers': ['broker'],
+            'acks': 1,
+            'value.serializer': 'io.confluent.kafka.serializers.KafkaAvroSerializer',
+            'schema.registry.url': 'schemaregistry'
+        })
+        producer_mock.send.assert_has_calls(
+            [
+                call('topic', bytes('msg_a1_1', 'utf-8')),
+                call('topic', bytes('msg_a1_2', 'utf-8')),
+                call('topic', bytes('msg_a2_1', 'utf-8')),
+                call('topic', bytes('msg_b1_1', 'utf-8')),
+                call('topic', bytes('msg_b_a1_1', 'utf-8')),
+                call('topic', bytes('msg_b_a2_1', 'utf-8')),
+                call('topic', bytes('msg_b_a2_2', 'utf-8'))
+            ], any_order=True
         )
-
-
-def test_get_file_input():
-    get_input({'type': 'file', 'args': {'dir_path': 'x'}})
-    with pytest.raises(Exception):
-        get_input({'type': 'file', 'args': {'x': 'x'}})
-
-
-def test_get_file_output():
-    output_config = {'type': 'file', 'args': {'dir_path': 'x'}}
-    get_output(output_config)
-    with pytest.raises(Exception):
-        get_output({'type': 'file', 'args': {'x': 'x'}})
+        assert producer_mock.send.call_count == 7, producer_mock.send.call_args_list

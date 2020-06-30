@@ -9,11 +9,11 @@ setup(
     packages=find_packages(),
     install_requires=[
         'Click==7.0',
-        'kafka-python==2.0.1'
+        'confluent-kafka==1.4.2'
     ],
     entry_points={
         'console_scripts': [
-            'launch=feed.run:run'
+            'launch=loader.run:run'
         ]
     }
 )
