@@ -28,14 +28,14 @@ def test_directory():
 
     _make_structure(random_id, {
         'a': {
-            'file_a1': ['msg_a1_1', 'msg_a1_2'],
-            'file_a2': ['msg_a2_1']
+            'a1': ['{"msg": "a_a1_1"}', '{"msg": "a_a1_2"}'],
+            'a2': ['{"msg": "a_a2_1"}']
         },
         'b': {
-            'file_b1': ['msg_b1_1'],
-            'b_a': {
-                'file_b_a1': ['msg_b_a1_1'],
-                'file_b_a2': ['msg_b_a2_1', 'msg_b_a2_2'],
+            'b1': ['{"msg": "b_b1_1"}'],
+            'b2': {
+                'a1': ['{"msg": "b_b2_a1_1"}'],
+                'a2': ['{"msg": "b_b2_a2_1"}', '{"msg": "b_b2_a2_2"}'],
                 '.should_be_ignored': ['UNWANTED1', 'UNWANTED2'],
             },
             '.another_to_be_ignored': ['UNWANTED1', 'UNWANTED2'],
@@ -48,26 +48,41 @@ def test_directory():
     shutil.rmtree(random_id)
 
 
-def test_load(test_directory):
-    producer_mock = Mock(spec_set=Producer)
-    with patch('loader.run.create_kafka_producer', return_value=producer_mock) as producer_factory_mock:
-        load(test_directory, 'broker', 'schemaregistry', 'topic')
+@pytest.fixture
+def schema_file_path():
+    random_id = uuid.uuid4().hex
+    with open(random_id, 'w') as f:
+        f.write('SCHEMA')
 
-        producer_factory_mock.assert_called_once_with({
-            'bootstrap.servers': ['broker'],
-            'acks': 1,
-            'value.serializer': 'io.confluent.kafka.serializers.KafkaAvroSerializer',
-            'schema.registry.url': 'schemaregistry'
-        })
-        producer_mock.send.assert_has_calls(
+    yield random_id
+
+    os.remove(random_id)
+
+
+def test_load(test_directory, schema_file_path):
+    producer_mock = Mock(spec_set=Producer)
+    with patch('loader.run.create_kafka_producer', return_value=producer_mock) as producer_factory_mock, \
+            patch('confluent_kafka.avro.loads', return_value='MOCK_AVRO_SCHEMA') as mock_avro_loads:
+        load(test_directory, 'broker', schema_file_path, 'schemaregistry', 'topic')
+
+        mock_avro_loads.assert_called_once_with('SCHEMA')
+        producer_factory_mock.assert_called_once_with(
+            config={
+                'acks': 0,
+                'bootstrap.servers': 'broker',
+                'schema.registry.url': 'schemaregistry'
+            },
+            value_schema='MOCK_AVRO_SCHEMA'
+        )
+        producer_mock.produce.assert_has_calls(
             [
-                call('topic', bytes('msg_a1_1', 'utf-8')),
-                call('topic', bytes('msg_a1_2', 'utf-8')),
-                call('topic', bytes('msg_a2_1', 'utf-8')),
-                call('topic', bytes('msg_b1_1', 'utf-8')),
-                call('topic', bytes('msg_b_a1_1', 'utf-8')),
-                call('topic', bytes('msg_b_a2_1', 'utf-8')),
-                call('topic', bytes('msg_b_a2_2', 'utf-8'))
+                call(topic='topic', value={'msg': 'a_a1_1'}),
+                call(topic='topic', value={'msg': 'a_a1_2'}),
+                call(topic='topic', value={'msg': 'a_a2_1'}),
+                call(topic='topic', value={'msg': 'b_b1_1'}),
+                call(topic='topic', value={'msg': 'b_b2_a1_1'}),
+                call(topic='topic', value={'msg': 'b_b2_a2_1'}),
+                call(topic='topic', value={'msg': 'b_b2_a2_2'})
             ], any_order=True
         )
-        assert producer_mock.send.call_count == 7, producer_mock.send.call_args_list
+        assert producer_mock.produce.call_count == 7, producer_mock.send.call_args_list

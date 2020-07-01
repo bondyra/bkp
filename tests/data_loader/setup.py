@@ -9,7 +9,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         'Click==7.0',
-        'confluent-kafka==1.4.2'
+        'confluent-kafka[schema-registry,avro]==1.4.2'
     ],
     entry_points={
         'console_scripts': [
