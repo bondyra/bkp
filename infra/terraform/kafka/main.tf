@@ -1,9 +1,6 @@
 variable "namespace" {
 }
 
-variable "external_port" {
-}
-
 resource "kubernetes_config_map" "broker_config" {
   metadata {
     name      = "broker-config"
@@ -55,21 +52,66 @@ resource "kubernetes_service" "bootstrap" {
   }
 }
 
-resource "kubernetes_service" "outside" {
+resource "kubernetes_service" "outside0" {
   metadata {
-    name      = "kafka-outside"
+    name      = "kafka-outside-0"
     namespace = var.namespace
   }
 
   spec {
     selector = {
       app = "kafka"
+      kafka-broker-id = "0"
     }
 
     port {
       target_port = "9094"
-      port = var.external_port
-      node_port = var.external_port
+      port = "32400"
+      node_port = "32400"
+    }
+
+    type = "NodePort"
+  }
+}
+
+resource "kubernetes_service" "outside1" {
+  metadata {
+    name      = "kafka-outside-1"
+    namespace = var.namespace
+  }
+
+  spec {
+    selector = {
+      app = "kafka"
+      kafka-broker-id = "1"
+    }
+
+    port {
+      target_port = "9094"
+      port = "32401"
+      node_port = "32401"
+    }
+
+    type = "NodePort"
+  }
+}
+
+resource "kubernetes_service" "outside2" {
+  metadata {
+    name      = "kafka-outside-2"
+    namespace = var.namespace
+  }
+
+  spec {
+    selector = {
+      app = "kafka"
+      kafka-broker-id = "2"
+    }
+
+    port {
+      target_port = "9094"
+      port = "32402"
+      node_port = "32402"
     }
 
     type = "NodePort"

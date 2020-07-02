@@ -21,10 +21,19 @@ def _iter_files_recursive(dir: str) -> Iterable[str]:
                 yield os.path.join(dir, file)
 
 
-def _read_file(file_path: str) -> Iterable[str]:
+def _read_file(file_path: str) -> Iterable[Dict]:
     with open(file_path, 'r') as file:
         for line in file.readlines():
             yield json.loads(line.strip())
+
+
+def delivery_report(err, msg):
+    """ Called once for each message produced to indicate delivery result.
+        Triggered by poll() or flush(). """
+    if err is not None:
+        print('Message delivery failed: {}'.format(err))
+    else:
+        print('Message delivered to {} [{}]'.format(msg.topic(), msg.partition()))
 
 
 class TestDataProducer:
@@ -32,9 +41,10 @@ class TestDataProducer:
                  topic_name: str):
         self._producer = create_kafka_producer(
             config={
-                'acks': 0,
+                'acks': 1,
                 'bootstrap.servers': kafka_host,
-                'schema.registry.url': schema_registry_url
+                'schema.registry.url': schema_registry_url,
+                'on_delivery': delivery_report
             },
             value_schema=self._load_schema(schema_file_path)
         )
@@ -42,11 +52,15 @@ class TestDataProducer:
 
     def _load_schema(self, schema_file_path: str):
         with open(schema_file_path, 'rb') as f:
-            content = f.read().decode('utf-8-sig')  # NOTE: remember - no sig for json2!
+            content = f.read().decode('utf-8-sig')
             return avro.loads(content)
 
     def push_data(self, content: Dict):
+        print(content)
         self._producer.produce(topic=self._topic_name, value=content)
+
+    def finish(self):
+        self._producer.flush()
 
 
 def load(data_dir: str, bootstrap_server: str, schema_file_path: str, schema_registry_url: str,
@@ -55,6 +69,7 @@ def load(data_dir: str, bootstrap_server: str, schema_file_path: str, schema_reg
     for file_path in _iter_files_recursive(data_dir):
         for line in _read_file(file_path):
             producer.push_data(content=line)
+    producer.finish()
 
 
 @click.command()

@@ -6,9 +6,6 @@ terraform {
   }
 }
 
-variable "broker_port" {
-}
-
 variable "schema_registry_port" {
 }
 
@@ -19,6 +16,9 @@ variable "connect_port" {
 }
 
 variable "connect_plugin_path" {
+}
+
+variable "kafka_maintenance_pod_name" {
 }
 
 resource "kubernetes_namespace" "kafka_workspace" {
@@ -51,7 +51,6 @@ module "zookeeper" {
 module "kafka" {
   source = "./kafka"
   namespace = kubernetes_namespace.kafka_workspace.metadata[0].name
-  external_port = var.broker_port
 }
 
 module "kafka-aux" {
@@ -63,4 +62,6 @@ module "kafka-aux" {
 
   connect_external_port = var.connect_port
   connect_plugin_path = var.connect_plugin_path
+
+  pod_name = var.kafka_maintenance_pod_name
 }
