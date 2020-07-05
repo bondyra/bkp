@@ -5,7 +5,7 @@ from typing import Dict
 
 import pytest
 from confluent_kafka import Producer
-from loader.run import load
+from loader.run import load, delivery_report
 from mock import patch, Mock, call
 
 
@@ -68,9 +68,10 @@ def test_load(test_directory, schema_file_path):
         mock_avro_loads.assert_called_once_with('SCHEMA')
         producer_factory_mock.assert_called_once_with(
             config={
-                'acks': 0,
+                'acks': 1,
                 'bootstrap.servers': 'broker',
-                'schema.registry.url': 'schemaregistry'
+                'schema.registry.url': 'schemaregistry',
+                'on_delivery': delivery_report
             },
             value_schema='MOCK_AVRO_SCHEMA'
         )
@@ -86,3 +87,4 @@ def test_load(test_directory, schema_file_path):
             ], any_order=True
         )
         assert producer_mock.produce.call_count == 7, producer_mock.send.call_args_list
+        producer_mock.flush.assert_called_once()

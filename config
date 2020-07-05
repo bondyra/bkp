@@ -8,4 +8,4 @@ CONNECT_PLUGIN_PATH="/usr/share/confluent-hub-components"
 
 KAFKA_MAINTENANCE_POD_NAME=kafka-maintenance
 
-TOPIC_NAME=test5
+TOPIC_NAME=test
