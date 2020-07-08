@@ -11,3 +11,7 @@ source config
 -var "connect_plugin_path=${CONNECT_PLUGIN_PATH}" \
 -var "kafka_maintenance_pod_name=${KAFKA_MAINTENANCE_POD_NAME}" \
 infra/terraform
+
+if [ $? -eq 0 ]; then
+    ./infra/helm/run.sh
+fi
