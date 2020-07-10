@@ -15,6 +15,9 @@ variable "control_center_port" {
 variable "connect_port" {
 }
 
+variable "connect_pv_claim_name" {
+}
+
 variable "connect_plugin_path" {
 }
 
@@ -61,6 +64,7 @@ module "kafka-aux" {
   control_center_external_port = var.control_center_port
 
   connect_external_port = var.connect_port
+  connect_pv_claim_name = var.connect_pv_claim_name
   connect_plugin_path = var.connect_plugin_path
 
   pod_name = var.kafka_maintenance_pod_name

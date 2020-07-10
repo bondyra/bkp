@@ -1,6 +1,9 @@
 variable "connect_external_port" {
 }
 
+variable "connect_pv_claim_name" {
+}
+
 variable "connect_plugin_path" {
 }
 
@@ -28,7 +31,7 @@ resource "kubernetes_service" "connect" {
 
 resource "kubernetes_persistent_volume_claim" "connect_plugins_pv_claim" {
   metadata {
-    name      = "connect-plugins-pv-claim"
+    name      = var.connect_pv_claim_name
     namespace = var.namespace
   }
 
