@@ -2,7 +2,7 @@ provider "kubernetes" {}
 
 terraform {
   backend "local" {
-    path = "/home/bondyra/bkp-state.tfstate"
+    workspace_dir = "/home/bondyra/bkp-state"
   }
 }
 

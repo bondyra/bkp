@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import argparse
 import logging
 import time
@@ -27,7 +28,7 @@ def main(namespace: str, pod_names: List[str]):
             else f'Retry {retries + 1}/20'
         )
         if all(_is_pod_running(c, namespace, pod_name) for pod_name in pod_names):
-            logging.info(f'Pods are stable! {2-succesful_checks} check(s) to go.')
+            logging.info(f'Pods are stable! {2 - succesful_checks} check(s) to go.')
             succesful_checks += 1
         else:
             logging.info(f'Failed check - not all pods are stable.')

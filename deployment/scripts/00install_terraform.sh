@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 TEMPDIR="$(mktemp -d)"
 PLATFORM="$(uname | tr '[:upper:]' '[:lower:]')"
