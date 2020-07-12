@@ -1,7 +1,5 @@
-import argparse
-
 #!/usr/bin/env python3
-
+import argparse
 from kubernetes import config, client
 
 config.load_kube_config()
