@@ -23,6 +23,6 @@ def main(dry_run: bool):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Process some integers.')
-    parser.add_argument('--dry-run', dest='dry_run', type=bool, default=True)
+    parser.add_argument('--no-dry-run', dest='no_dry_run', action='store_true')
     args = parser.parse_args()
-    main(args.dry_run)
+    main(not args.no_dry_run)

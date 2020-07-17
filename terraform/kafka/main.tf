@@ -249,7 +249,7 @@ resource "kubernetes_stateful_set" "kafka" {
 
           resources {
             limits {
-              memory = "600Mi"
+              memory = "300Mi"
             }
 
             requests {
@@ -304,7 +304,7 @@ resource "kubernetes_stateful_set" "kafka" {
 
         resources {
           requests = {
-            storage = "10Gi"
+            storage = "1Gi"
           }
         }
 

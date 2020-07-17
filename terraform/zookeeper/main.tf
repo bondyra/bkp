@@ -234,7 +234,7 @@ resource "kubernetes_stateful_set" "pzoo" {
 
         resources {
           requests = {
-            storage = "1Gi"
+            storage = "200M"
           }
         }
 
@@ -402,7 +402,7 @@ resource "kubernetes_stateful_set" "zoo" {
 
         resources {
           requests = {
-            storage = "1Gi"
+            storage = "200M"
           }
         }
 
