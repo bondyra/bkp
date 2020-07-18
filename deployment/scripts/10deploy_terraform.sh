@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-if [[ -z $WORKSPACE || -z $SCHEMA_REGISTRY_PORT || -z $CONTROL_CENTER_PORT || -z $CONNECT_PORT || -z $CONNECT_PV_CLAIM_NAME || -z $CONNECT_PLUGIN_PATH || -z $KAFKA_MAINTENANCE_POD_NAME ]]; then
+if [[ -z $WORKSPACE || -z $SCHEMA_REGISTRY_PORT || -z $CONTROL_CENTER_PORT || -z $CONNECT_PORT || -z $CONNECT_PV_CLAIM_NAME || -z $CONNECT_PLUGIN_PATH || -z $KAFKA_MAINTENANCE_POD_NAME || -z $ELASTICSEARCH_PORT ]]; then
   echo 'Define required env vars'
   exit 1
 fi
@@ -22,4 +22,5 @@ terraform apply \
 -var "connect_pv_claim_name=${CONNECT_PV_CLAIM_NAME}" \
 -var "connect_plugin_path=${CONNECT_PLUGIN_PATH}" \
 -var "kafka_maintenance_pod_name=${KAFKA_MAINTENANCE_POD_NAME}" \
+-var "elasticsearch_port=${ELASTICSEARCH_PORT}" \
 ${TERRAFORM_FOLDER}

@@ -24,6 +24,9 @@ variable "connect_plugin_path" {
 variable "kafka_maintenance_pod_name" {
 }
 
+variable "elasticsearch_port" {
+}
+
 resource "kubernetes_namespace" "kafka_workspace" {
   metadata {
     name = terraform.workspace
@@ -68,4 +71,11 @@ module "kafka-aux" {
   connect_plugin_path = var.connect_plugin_path
 
   pod_name = var.kafka_maintenance_pod_name
+}
+
+module "elasticsearch" {
+  source = "./elasticsearch"
+  namespace = kubernetes_namespace.kafka_workspace.metadata[0].name
+
+  elasticsearch_external_port = var.elasticsearch_port
 }

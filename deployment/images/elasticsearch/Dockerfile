@@ -11,4 +11,4 @@ EXPOSE 9200
 RUN useradd es
 RUN chown -R es /elasticsearch-7.8.0
 USER es
-ENTRYPOINT /elasticsearch-7.8.0/bin/elasticsearch
+ENTRYPOINT /elasticsearch-7.8.0/bin/elasticsearch -Enetwork.host=0.0.0.0 -Ediscovery.type="single-node"

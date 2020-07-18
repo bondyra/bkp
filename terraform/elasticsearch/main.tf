@@ -12,7 +12,7 @@ resource "kubernetes_service" "elasticsearch_service" {
 
   spec {
     port {
-      port = 9020
+      port = 9200
     }
 
     selector = {
@@ -32,7 +32,7 @@ resource "kubernetes_service" "elasticsearch_service_outside" {
       protocol    = "TCP"
       port        = var.elasticsearch_external_port
       node_port   = var.elasticsearch_external_port
-      target_port = "9020"
+      target_port = "9200"
     }
 
     selector = {
@@ -54,35 +54,37 @@ resource "kubernetes_deployment" "elasticsearch" {
 
     selector {
       match_labels = {
-        app = "schema-registry"
+        app = "elasticsearch"
       }
     }
 
     template {
       metadata {
         labels = {
-          app = "schema-registry"
+          app = "elasticsearch"
         }
       }
 
       spec {
         container {
-          name  = "schemaregistry"
-          image = "confluentinc/cp-schema-registry:5.2.2"
+          name  = "elasticsearch"
+          image = "bkp-es:latest"
+          image_pull_policy = "Never"
 
           port {
-            container_port = 9020
+            container_port = 9200
           }
 
 
           resources {
             limits {
-              memory = "300Mi"
+              cpu    = "100m"
+              memory = "450Mi"
             }
 
             requests {
-              cpu    = "100m"
-              memory = "100Mi"
+              cpu    = "50m"
+              memory = "400Mi"
             }
           }
         }
