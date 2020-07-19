@@ -79,12 +79,12 @@ resource "kubernetes_deployment" "elasticsearch" {
           resources {
             limits {
               cpu    = "100m"
-              memory = "450Mi"
+              memory = "900Mi"
             }
 
             requests {
               cpu    = "50m"
-              memory = "400Mi"
+              memory = "750Mi"
             }
           }
         }

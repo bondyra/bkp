@@ -21,5 +21,8 @@ scp -i $(minikube ssh-key) ${CONNECTOR_ZIPS_FOLDER}/*.zip docker@$(minikube ip):
 
 for zipfile in $(minikube ssh "ls ${MINIKUBE_PATH}/*.zip");
 do
-    minikube ssh "unzip $zipfile -d ${MINIKUBE_PATH}"
+    echo $zipfile
+    echo $MINIKUBE_PATH
+    echo $zipfile $MINIKUBE_PATH
+#    minikube ssh "unzip $zipfile -d ${MINIKUBE_PATH}"
 done
