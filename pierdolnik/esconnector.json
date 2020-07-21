@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 {
   "name": "elasticsearch-test-sink",
   "config": {
@@ -7,11 +5,10 @@
     "tasks.max": "1",
     "topics": "test",
     "key.ignore": "true",
-    "schema.registry.url": "http://schema-registry-service:8081",
     "connection.url": "http://elasticsearch-service:9200",
+    "connection.timeout.ms": 30000,
     "type.name": "kafka-connect",
-    "name": "elasticsearch-sink"
-  },
-  "tasks": []
+    "value.converter":"io.confluent.connect.avro.AvroConverter",
+    "value.converter.schema.registry.url": "http://schema-registry-service:8081"
+  }
 }
-
