@@ -1,5 +1,5 @@
 {
-  "name": "elasticsearch-test-sink",
+  "name": "es",
   "config": {
     "connector.class": "io.confluent.connect.elasticsearch.ElasticsearchSinkConnector",
     "tasks.max": "1",
