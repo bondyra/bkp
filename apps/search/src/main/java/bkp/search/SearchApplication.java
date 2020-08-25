@@ -42,7 +42,7 @@ public class SearchApplication {
 			SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
 			return searchResponse.toString();
 		} catch (IOException e) {
-			throw new ExampleException(e.toString());
+			throw new ExampleException("dupacipa " + e.getMessage());
 		}
 	}
 

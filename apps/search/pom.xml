@@ -70,6 +70,7 @@
 				<artifactId>kubernetes-maven-plugin</artifactId>
 
 				<configuration>
+					<namespace>test</namespace>
 					<resources>
 						<labels>
 							<all>
