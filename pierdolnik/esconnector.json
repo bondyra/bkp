@@ -6,7 +6,7 @@
     "topics": "test",
     "key.ignore": "true",
     "connection.url": "http://elasticsearch-service:9200",
-    "connection.timeout.ms": 30000,
+    "connection.timeout.ms": 60000,
     "type.name": "kafka-connect",
     "value.converter":"io.confluent.connect.avro.AvroConverter",
     "value.converter.schema.registry.url": "http://schema-registry-service:8081"
