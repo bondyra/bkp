@@ -15,7 +15,7 @@ TERRAFORM_FOLDER=`pwd`/$1
 
 terraform init ${TERRAFORM_FOLDER}
 terraform workspace new ${WORKSPACE} ${TERRAFORM_FOLDER} || terraform workspace select ${WORKSPACE} ${TERRAFORM_FOLDER}
-terraform destroy \
+terraform destroy -auto-approve \
 -var "schema_registry_port=${SCHEMA_REGISTRY_PORT}" \
 -var "control_center_port=${CONTROL_CENTER_PORT}" \
 -var "connect_port=${CONNECT_PORT}" \
