@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class ServiceConfig {
+public class ServiceConfiguration {
   @Bean
   public RestHighLevelClient elasticsearchClient(ServiceProperties props){
     return new RestHighLevelClient(

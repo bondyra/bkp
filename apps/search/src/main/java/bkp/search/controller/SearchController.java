@@ -1,7 +1,10 @@
 package bkp.search.controller;
 
+import bkp.search.logic.SearchException;
 import bkp.search.logic.SearchService;
 import bkp.search.model.Offer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,11 +14,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @Controller
+@RequestMapping("/search")
 public class SearchController {
-  private SearchService service;
+  private static Logger logger = LoggerFactory.getLogger(SearchController.class);
+  private final SearchService service;
+
+  public SearchController(SearchService service) {
+    this.service = service;
+  }
 
   @RequestMapping(method = RequestMethod.GET)
-  ResponseEntity<List<Offer>> fullTextSearch(@RequestParam(value = "pattern", defaultValue = "") String pattern) {
-    return ResponseEntity.ok(service.getOffersThatHaveText(pattern));
+  ResponseEntity<List<Offer>> fullTextSearch(@RequestParam(value = "pattern", defaultValue = "") String pattern) throws SearchException {
+    var results = service.getOffersThatHaveText(pattern);
+    logger.warn("DUPACIPA->" + results.size());
+    return ResponseEntity.ok(results);
   }
 }

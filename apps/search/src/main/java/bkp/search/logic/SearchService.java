@@ -18,7 +18,12 @@ public class SearchService {
   private RestHighLevelClient elasticsearchClient;
   private String indexName;
 
-  public List<Offer> getOffersThatHaveText(String pattern) {
+  public SearchService(RestHighLevelClient elasticsearchClient, String indexName){
+    this.elasticsearchClient = elasticsearchClient;
+    this.indexName = indexName;
+  }
+
+  public List<Offer> getOffersThatHaveText(String pattern) throws SearchException {
     SearchRequest searchRequest = new SearchRequest(this.indexName);
     SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
     searchSourceBuilder.query(QueryBuilders.matchQuery("content.text", pattern));
@@ -27,7 +32,7 @@ public class SearchService {
       SearchResponse searchResponse = this.elasticsearchClient.search(searchRequest, RequestOptions.DEFAULT);
       return new ArrayList<>(); // searchResponse.getHits(); TODO
     } catch (IOException e) {
-      throw new IllegalStateException();  // todo add service exception and exception handler
+      throw new SearchException("Something went wrong: " + e.toString());
     }
   }
 }
