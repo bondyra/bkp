@@ -64,7 +64,6 @@ class TestDataProducer:
             self._schema_problems += 1
         except Exception:
             self._other_problems += 1
-            raise
         self._processed += 1
 
     def finish(self):
