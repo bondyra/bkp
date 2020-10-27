@@ -11,8 +11,7 @@ public class ServiceConfiguration {
   @Bean
   public RestHighLevelClient elasticsearchClient(ServiceProperties props){
     return new RestHighLevelClient(
-      RestClient.builder(
-        new HttpHost(props.getHost(), props.getPort(), props.getScheme())));
+      RestClient.builder(new HttpHost(props.getHost(), props.getPort(), "http")));
   }
 
   @Bean

@@ -4,11 +4,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties("elasticsearch")
+@ConfigurationProperties("es")
 public class ServiceProperties {
   private String host;
   private Integer port;
-  private String scheme = "http";
   private String indexName;
 
   public String getHost() {
@@ -25,14 +24,6 @@ public class ServiceProperties {
 
   public void setPort(Integer port) {
     this.port = port;
-  }
-
-  public String getScheme() {
-    return scheme;
-  }
-
-  public void setScheme(String scheme) {
-    this.scheme = scheme;
   }
 
   public String getIndexName() {

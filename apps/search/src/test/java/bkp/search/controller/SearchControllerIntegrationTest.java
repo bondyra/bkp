@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,12 +38,13 @@ public class SearchControllerIntegrationTest {
 
   @Test
   void httpGet_returnsResults() throws SearchException {
-    when(service.getOffersThatHaveText("text"))
-      .thenReturn(Arrays.asList(new Offer(), new Offer()));
+    var offer1 = new Offer("indexedId1", "link1", LocalDateTime.now(), "title1");
+    var offer2 = new Offer("indexedId2", "link2", LocalDateTime.now(), "title2");
+    when(service.getOffersThatHaveText("text")).thenReturn(Arrays.asList(offer1, offer2));
 
     var results = restTemplate.getForObject(searchUrl("text"), Offer[].class);
 
-    assertThat(results).hasSize(2);
+    assertThat(results).usingFieldByFieldElementComparator().hasSameElementsAs(Arrays.asList(offer1, offer2));
   }
 
   @Test

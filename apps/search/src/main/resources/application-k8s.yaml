@@ -1,6 +1,0 @@
-server:
-  port: 1488
-elasticsearch:
-  host: "elasticsearch-service"
-  port: "9200"
-  indexName: "test"

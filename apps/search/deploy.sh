@@ -5,4 +5,4 @@ if [[ -z $WORKSPACE ]]; then
   exit 1
 fi
 
-mvn clean install k8s:build k8s:resource k8s:apply -Dnamespace=$WORKSPACE
+./mvnw clean package k8s:build k8s:resource k8s:apply -Dnamespace=$WORKSPACE
