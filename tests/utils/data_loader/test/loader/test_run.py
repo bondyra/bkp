@@ -5,7 +5,8 @@ from typing import Dict
 
 import pytest
 from confluent_kafka import Producer
-from loader.run import load, delivery_report
+from loader.producer import delivery_report
+from loader.run import do_run
 from mock import patch, Mock, call
 
 
@@ -59,11 +60,11 @@ def schema_file_path():
     os.remove(random_id)
 
 
-def test_load(test_directory, schema_file_path):
+def test_run(test_directory, schema_file_path):
     producer_mock = Mock(spec_set=Producer)
-    with patch('loader.run.create_kafka_producer', return_value=producer_mock) as producer_factory_mock, \
+    with patch('loader.producer.create_kafka_producer', return_value=producer_mock) as producer_factory_mock, \
             patch('confluent_kafka.avro.loads', return_value='MOCK_AVRO_SCHEMA') as mock_avro_loads:
-        load(test_directory, 'broker', schema_file_path, 'schemaregistry', 'topic')
+        do_run(test_directory, 'broker', schema_file_path, 'schemaregistry', 'topic')
 
         mock_avro_loads.assert_called_once_with('SCHEMA')
         producer_factory_mock.assert_called_once_with(
