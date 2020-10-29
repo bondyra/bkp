@@ -103,4 +103,3 @@ resource "kubernetes_deployment" "control_center" {
     }
   }
 }
-

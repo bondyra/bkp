@@ -1,3 +1,4 @@
+import logging
 from typing import Dict
 
 from avro.io import AvroTypeException
@@ -17,8 +18,7 @@ def delivery_report(err, msg):
 
 
 class TestDataProducer:
-    def __init__(self, kafka_host: str, schema_file_path: str, schema_registry_url: str,
-                 topic_name: str):
+    def __init__(self, kafka_host: str, schema_file_path: str, schema_registry_url: str, topic_name: str):
         self._producer = create_kafka_producer(
             config={
                 'acks': 1,
@@ -32,6 +32,7 @@ class TestDataProducer:
         self._processed = 0
         self._schema_problems = 0
         self._other_problems = 0
+        self._logger = logging.getLogger(self.__class__.__name__)
 
     def _load_schema(self, schema_file_path: str):
         with open(schema_file_path, 'rb') as f:
@@ -41,14 +42,16 @@ class TestDataProducer:
     def push_data(self, content: Dict):
         try:
             self._producer.produce(topic=self._topic_name, value=content)
-        except AvroTypeException:
+        except AvroTypeException as e:
             self._schema_problems += 1
+            self._logger.exception('Schema error occurred')
         except Exception:
             self._other_problems += 1
+            self._logger.exception('Non schema error occurred')
         self._processed += 1
 
     def finish(self):
-        self._producer.flush()
-        print(f'Processed {self._processed} records: '
-              f'({self._schema_problems} schema errors, '
-              f'{self._other_problems} other errors).')
+        self._producer.flush(200000)
+        self._logger.info(f'Processed {self._processed} records: '
+                          f'({self._schema_problems} schema errors, '
+                          f'{self._other_problems} other errors).')

@@ -8,7 +8,7 @@ fi
 
 ES_SINK_CONNECTOR_NAME=$1
 
-curl -X POST `minikube ip`:${CONNECT_PORT}/connectors --header "Content-Type:application/json" -d '{
+curl -v -X POST `minikube ip`:${CONNECT_PORT}/connectors --header "Content-Type:application/json" -d '{
   "name": "es-sink",
   "config": {
     "connector.class": "io.confluent.connect.elasticsearch.ElasticsearchSinkConnector",
