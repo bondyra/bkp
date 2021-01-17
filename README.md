@@ -14,8 +14,7 @@ Current implementation is a PoC that:
 - has a fully functional middleware based on Kafka, Kafka Connect and Schema Registry
 - provides simplistic full text query feature using Elasticsearch pod and a very basic Spring microservice
 
-
-Current implementation can be depicted in the following diagram:
+Following diagram depicts the design:
 ![Alt text](docs/overview.png?raw=true)
 
 For the details - navigate to top directories to get other READMEs.
