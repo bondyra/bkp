@@ -9,19 +9,23 @@ The loose idea of this project is to have a system that:
 - Provides a number of services that allow querying the transformed data for different purposes.
 
 # Current implementation
-Current implementation is a PoC that is powered my local filesystem test data (stored in private repo, accessed by a git submodule), that allows to perform simplistic full text query using Elasticsearch container and a simple Spring application.
+Current implementation is a PoC that: 
+- loads data from test logs (stored in private repo, accessed by a git submodule)
+- has a fully functional middleware based on Kafka and Kafka Connect
+- provides simplistic full text query feature using Elasticsearch container and a very basic Spring microservice
 
-To know more - please navigate to top directories to get further READMEs.
 
 Current implementation can be depicted in the following diagram:
 ![Alt text](docs/overview.png?raw=true)
-Feeding the system with data is simple - one has to have an access to Kafka and 
+
+For the details - navigate to top directories to get other READMEs.
 
 # Prerequisites
 - Linux
+- docker
 - Local kubernetes cluster - I recommend minikube with VirtualBox driver with at least 4 GB of RAM for cluster (tested empirically, lesser values will result in OOMs - a lot of stuff is spinning up).
 - Python 3
-- Maven 2 as a build tool for search microservice
+- Maven 2 as a build tool for Spring microservice
 - Java 11
 
 # Deployment notes
