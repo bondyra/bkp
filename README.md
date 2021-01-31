@@ -9,11 +9,12 @@ The loose idea of this project is to have a system that:
 - Provides a number of downstream user-facing microservices that allow querying the views for different purposes.
 
 # Current implementation
-Current implementation is a PoC - it is definitely not a production ready system.
+Current implementation is a PoC - it is pretty chaotic, I need to rethink the structure of this repository.
 It works as follows:
 - loads data from test logs (stored in private repo, accessed by a git submodule),
 - has a functional middleware based on Kafka, Kafka Connect and Schema Registry,
 - provides simplistic full text query feature using Elasticsearch pod and a very basic Spring microservice.
+- has some basic Spark integration (WIP)
 
 Following diagram shows what are the building blocks of this implementation:
 ![Alt text](docs/overview.png?raw=true)
@@ -23,10 +24,11 @@ For the details - navigate to top directories to get other READMEs.
 # Prerequisites
 - Linux
 - Docker
-- Local kubernetes cluster - I recommend minikube with VirtualBox driver allocated with at least 4 GB of RAM (tested empirically, lesser values will result in OOMs - a lot of stuff is spinning up).
+- Local kubernetes cluster - I recommend minikube with VirtualBox driver allocated with at least 6 GB of RAM (tested empirically, lesser values will result in OOMs - a lot of stuff is spinning up).
 - Python 3
 - Maven 2 as a build tool for Spring microservice
 - Java 11
+- various CTLs (terraform, helm) - there's a script for that
 
 # Deployment notes
 See README in /deployment top folder.
